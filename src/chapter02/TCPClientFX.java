@@ -29,8 +29,8 @@ public class TCPClientFX extends Application {
     private TextField tfSend = new TextField();
     private TextArea taDisplay = new TextArea();
 
-    private TextField tfIP = new TextField("");
-    private TextField tfPort = new TextField();
+    private TextField tfIP = new TextField("127.0.0.1");
+    private TextField tfPort = new TextField("8008");
     private Button btnConnect = new Button("连接");
 
     private TCPClient tcpClient;
@@ -77,6 +77,10 @@ public class TCPClientFX extends Application {
                 //成功连接服务器，接收服务器发来的第一条欢迎信息
                 String firstMsg = tcpClient.receive();
                 taDisplay.appendText(firstMsg + "\n");
+                // 启用发送按钮
+                btnSend.setDisable(false);
+                // 停用连接按钮
+                btnConnect.setDisable(true);
             } catch (Exception e) {
                 taDisplay.appendText("服务器连接失败！" + e.getMessage() + "\n");
             }
@@ -96,11 +100,17 @@ public class TCPClientFX extends Application {
             taDisplay.appendText("客户端发送：" + sendMsg + "\n");
             String receiveMsg = tcpClient.receive();//从服务器接收一行字符
             taDisplay.appendText(receiveMsg + "\n");
+            // 发送bye后重新启用连接按钮，禁用发送按钮
+            if (sendMsg.equals("bye")) {
+                btnConnect.setDisable(false);
+                btnSend.setDisable(true);
+            }
         });
 
 
 
-
+        // 未连接时禁用发送按钮
+        btnSend.setDisable(true);
         hBox.getChildren().addAll(btnSend, btnExit);
         mainPane.setBottom(hBox);
         Scene scene = new Scene(mainPane, 700, 400);
