@@ -1,8 +1,8 @@
-package chapter02;
+package loockupscore;
 
-import chapter01.TextFileIO;
+import chapter02.TCPClient;
 import javafx.application.Application;
-import javafx.event.EventHandler;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -10,30 +10,25 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.time.LocalDateTime;
-
-public class TCPClientFX extends Application {
+public class LookUpScoreFX extends Application {
     private Button btnExit = new Button("退出");
     private Button btnSend = new Button("发送");
 
     private TextField tfSend = new TextField();
     private TextArea taDisplay = new TextArea();
 
-    private TextField tfIP = new TextField("127.0.0.1");
-    private TextField tfPort = new TextField("8008");
+    private TextField tfIP = new TextField("172.16.229.253");
+    private TextField tfPort = new TextField("9009");
     private Button btnConnect = new Button("连接");
 
     private TCPClient tcpClient;
+    private Thread readThread;
 
     public static void main(String[] args) {
         launch(args);
@@ -81,6 +76,20 @@ public class TCPClientFX extends Application {
                 btnSend.setDisable(false);
                 // 停用连接按钮
                 btnConnect.setDisable(true);
+                // 启用接收信息进程
+                readThread = new Thread(()->{
+                    String msg = null;
+                    while ((msg = tcpClient.receive()) != null) {
+                        String msgTemp = msg;
+                        Platform.runLater(() -> {
+                            taDisplay.appendText(msgTemp + "\n");
+                        });
+                    }
+                    Platform.runLater(() -> {
+                        taDisplay.appendText("对话已关闭！\n");
+                    });
+                });
+                readThread.start();
             } catch (Exception e) {
                 taDisplay.appendText("服务器连接失败！" + e.getMessage() + "\n");
             }
@@ -98,8 +107,8 @@ public class TCPClientFX extends Application {
             String sendMsg = tfSend.getText();
             tcpClient.send(sendMsg);//向服务器发送一串字符
             taDisplay.appendText("客户端发送：" + sendMsg + "\n");
-            String receiveMsg = tcpClient.receive();//从服务器接收一行字符
-            taDisplay.appendText(receiveMsg + "\n");
+//            String receiveMsg = tcpClient.receive();//从服务器接收一行字符
+//            taDisplay.appendText(receiveMsg + "\n");
             tfSend.clear();
             // 发送bye后重新启用连接按钮，禁用发送按钮
             if (sendMsg.equals("bye")) {
@@ -107,7 +116,6 @@ public class TCPClientFX extends Application {
                 btnSend.setDisable(true);
             }
         });
-
 
 
         // 未连接时禁用发送按钮
