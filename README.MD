@@ -17,6 +17,8 @@ git clone https://github.com/LeslieLeung/NetworkApp.git
 ## 更新日志/Release Note
 - 2020.9.20
     - 更新README
+- 2020.9.28
+    - 新增第四周和第五周 详见[Commits on Sep 28, 2020](https://github.com/LeslieLeung/NetworkApp/commits/master)
 
 ## 注意事项/Attention
 - 请不要将本项目用于作业的提交，仅供讨论学习！
