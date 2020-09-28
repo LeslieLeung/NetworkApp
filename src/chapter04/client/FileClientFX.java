@@ -24,8 +24,8 @@ public class FileClientFX extends Application {
     private TextField tfSend = new TextField();
     private TextArea taDisplay = new TextArea();
 
-    private TextField tfIP = new TextField("127.0.0.1");
-    private TextField tfPort = new TextField("8008");
+    private TextField tfIP = new TextField("172.16.229.253");
+    private TextField tfPort = new TextField("2021");
     private Button btnConnect = new Button("连接");
 
     private FileDialogClient fileDialogClient;
@@ -131,9 +131,9 @@ public class FileClientFX extends Application {
             if (tfSend.getText().equals("")) {
                 return;
             }
-            if (!isValidFile) {
-                return;
-            }
+//            if (!isValidFile) {
+//                return;
+//            }
 
             String fName = tfSend.getText().trim();
             tfSend.clear();
@@ -145,8 +145,7 @@ public class FileClientFX extends Application {
                 return;
             }
             try {
-                new FileDataClient(ip, "2020").getFile(saveFile);
-                Alert.AlertType alertAlertType;
+                new FileDataClient(tfIP.getText(), "2020").getFile(saveFile);
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setContentText(saveFile.getName() + "下载完毕！");
                 alert.showAndWait();
