@@ -1,24 +1,25 @@
-package chapter03;
+package chapter04.client;
 
-import chapter02.TCPClient;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-public class TCPClientThreadFX extends Application {
+import java.io.File;
+import java.io.IOException;
+
+public class FileClientFX extends Application {
     private Button btnExit = new Button("退出");
     private Button btnSend = new Button("发送");
+    private Button btnDownload = new Button("下载");
 
     private TextField tfSend = new TextField();
     private TextArea taDisplay = new TextArea();
@@ -27,8 +28,12 @@ public class TCPClientThreadFX extends Application {
     private TextField tfPort = new TextField("8008");
     private Button btnConnect = new Button("连接");
 
-    private TCPClient tcpClient;
+    private FileDialogClient fileDialogClient;
     private Thread readThread;
+
+    private String ip;
+    private String port;
+    private boolean isValidFile = true;
 
     public static void main(String[] args) {
         launch(args);
@@ -52,6 +57,12 @@ public class TCPClientThreadFX extends Application {
         taDisplay.setWrapText(true);
         // 只读
         taDisplay.setEditable(false);
+        // 设置taDisplay监听鼠标拖动行为并复制到发送框
+        taDisplay.selectionProperty().addListener(((observable, oldValue, newValue) -> {
+            if (!taDisplay.getSelectedText().equals("")) {
+                tfSend.setText(taDisplay.getSelectedText());
+            }
+        }));
         vBox.getChildren().addAll(new Label("信息显示区： "), taDisplay, new Label("信息输入区："), tfSend);
         VBox.setVgrow(taDisplay, Priority.ALWAYS);
         mainPane.setCenter(vBox);
@@ -68,22 +79,25 @@ public class TCPClientThreadFX extends Application {
 
             try {
                 //tcpClient不是局部变量，是本程序定义的一个TCPClient类型的成员变量
-                tcpClient = new TCPClient(ip,port);
+                fileDialogClient = new FileDialogClient(ip, port);
                 //成功连接服务器，接收服务器发来的第一条欢迎信息
-                String firstMsg = tcpClient.receive();
+                String firstMsg = fileDialogClient.receive();
                 taDisplay.appendText(firstMsg + "\n");
                 // 启用发送按钮
                 btnSend.setDisable(false);
                 // 停用连接按钮
                 btnConnect.setDisable(true);
                 // 启用接收信息进程
-                readThread = new Thread(()->{
+                readThread = new Thread(() -> {
                     String msg = null;
-                    while ((msg = tcpClient.receive()) != null) {
+                    while ((msg = fileDialogClient.receive()) != null) {
                         String msgTemp = msg;
                         Platform.runLater(() -> {
                             taDisplay.appendText(msgTemp + "\n");
                         });
+                        if (msg.equals("From 服务器：你输入了不合法的指令或不正确的文件名")) {
+                            isValidFile = false;
+                        }
                     }
                     Platform.runLater(() -> {
                         taDisplay.appendText("对话已关闭！\n");
@@ -100,7 +114,7 @@ public class TCPClientThreadFX extends Application {
         });
         btnSend.setOnAction(event -> {
             String sendMsg = tfSend.getText();
-            tcpClient.send(sendMsg);//向服务器发送一串字符
+            fileDialogClient.send(sendMsg);//向服务器发送一串字符
             taDisplay.appendText("客户端发送：" + sendMsg + "\n");
 //            String receiveMsg = tcpClient.receive();//从服务器接收一行字符
 //            taDisplay.appendText(receiveMsg + "\n");
@@ -112,10 +126,40 @@ public class TCPClientThreadFX extends Application {
             }
         });
 
+        // btnDownload逻辑
+        btnDownload.setOnAction(event -> {
+            if (tfSend.getText().equals("")) {
+                return;
+            }
+            if (!isValidFile) {
+                return;
+            }
+
+            String fName = tfSend.getText().trim();
+            tfSend.clear();
+
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setInitialFileName(fName);
+            File saveFile = fileChooser.showSaveDialog(null);
+            if (saveFile == null) {
+                return;
+            }
+            try {
+                new FileDataClient(ip, "2020").getFile(saveFile);
+                Alert.AlertType alertAlertType;
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setContentText(saveFile.getName() + "下载完毕！");
+                alert.showAndWait();
+                fileDialogClient.send("客户端开启下载");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
 
         // 未连接时禁用发送按钮
         btnSend.setDisable(true);
-        hBox.getChildren().addAll(btnSend, btnExit);
+        hBox.getChildren().addAll(btnDownload, btnSend, btnExit);
         mainPane.setBottom(hBox);
         Scene scene = new Scene(mainPane, 700, 400);
 
@@ -150,9 +194,9 @@ public class TCPClientThreadFX extends Application {
     }
 
     public void exit() {
-        if (tcpClient != null) {
-            tcpClient.send("bye");
-            tcpClient.close();
+        if (fileDialogClient != null) {
+            fileDialogClient.send("bye");
+            fileDialogClient.close();
         }
         System.exit(0);
     }
