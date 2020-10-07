@@ -90,6 +90,9 @@ public class TCPClientThreadFX extends Application {
                     }
                     Platform.runLater(() -> {
                         taDisplay.appendText("对话已关闭！\n");
+                        // 连接断开后重新开放连接按钮
+                        btnSend.setDisable(true);
+                        btnConnect.setDisable(false);
                     });
                 });
                 readThread.start();

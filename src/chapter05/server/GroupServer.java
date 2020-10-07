@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -12,7 +13,7 @@ public class GroupServer {
     private int port = 8008; //服务器监听端口
     private ServerSocket serverSocket; //定义服务器套接字
     public static ExecutorService executorService = Executors.newCachedThreadPool();
-    public static CopyOnWriteArraySet members = new CopyOnWriteArraySet<Socket>();
+    public static Set<Socket> members = new CopyOnWriteArraySet<>();
 
     public GroupServer() throws IOException {
 //        serverSocket = new ServerSocket(8008);
@@ -34,21 +35,30 @@ public class GroupServer {
                 new InputStreamReader(socketIn, "utf-8"));
     }
 
-    private void sendToAllMembers(String msg) throws IOException {
+    private void sendToAllMembers(String msg, String hostAddress) throws IOException {
         PrintWriter pw;
         OutputStream out;
-        Socket tempSocket;
 
-        Iterator<Socket> iterator = members.iterator();
-        while (iterator.hasNext()) {//遍历在线客户Set集合
-            tempSocket = iterator.next(); //取出一个客户的socket
-//            String hostName = tempSocket.getInetAddress().getHostName();
-//            String hostAddress = tempSocket.getInetAddress().getHostAddress();
+        for (Socket tempSocket : members) {
             out = tempSocket.getOutputStream();
             pw = new PrintWriter(
                     new OutputStreamWriter(out, "utf-8"), true);
-            pw.println(tempSocket.getInetAddress() + " 发言：" + msg );
+            pw.println(hostAddress + " 发言：" + msg );
         }
+
+
+//        Socket tempSocket;
+//
+//        Iterator<Socket> iterator = members.iterator();
+//        while (iterator.hasNext()) {//遍历在线客户Set集合
+//            tempSocket = iterator.next(); //取出一个客户的socket
+////            String hostName = tempSocket.getInetAddress().getHostName();
+////            String hostAddress = tempSocket.getInetAddress().getHostAddress();
+//            out = tempSocket.getOutputStream();
+//            pw = new PrintWriter(
+//                    new OutputStreamWriter(out, "utf-8"), true);
+//            pw.println(tempSocket.getInetAddress() + " 发言：" + msg );
+//        }
 
     }
 
@@ -85,7 +95,7 @@ public class GroupServer {
                     //向输出流中回传字符串,远程客户端可以读取该字符串
 //                    pw.println("From 服务器：" + msg);
                     // 替换群组发送
-                    sendToAllMembers(msg);
+                    sendToAllMembers(msg, socket.getInetAddress().getHostAddress());
 
                 }
             } catch (IOException e) {
