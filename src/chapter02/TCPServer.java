@@ -9,7 +9,7 @@ public class TCPServer {
     private ServerSocket serverSocket; //定义服务器套接字
 
     public TCPServer() throws IOException {
-        serverSocket = new ServerSocket(8008);
+        serverSocket = new ServerSocket(port);
         System.out.println("服务器启动监听在 " + port + " 端口");
     }
 
