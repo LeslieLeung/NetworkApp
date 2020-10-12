@@ -19,7 +19,7 @@ public class UDPClient {
         //创建一个UDP套接字，系统随机选定一个未使用的UDP端口绑定
         socket = new DatagramSocket();
         //设置接收数据超时
-        socket.setSoTimeout(30000);
+//        socket.setSoTimeout(30000);
     }
 
     //定义一个数据的发送方法
