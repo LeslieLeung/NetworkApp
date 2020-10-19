@@ -18,10 +18,11 @@ git clone https://github.com/LeslieLeung/NetworkApp.git
 ```
 
 ## 更新日志/Release Note
+详见[Commits](https://github.com/LeslieLeung/NetworkApp/commits/master)
 - 2020.9.20
     - 更新README
 - 2020.9.28
-    - 新增第四周和第五周 详见[Commits on Sep 28, 2020](https://github.com/LeslieLeung/NetworkApp/commits/master)
+    - 新增第四周和第五周
 - 2020.10.7
     - 更新第五周，实现了ChatServer，修复客户端一些小bug
         - ChatServer
@@ -32,7 +33,9 @@ git clone https://github.com/LeslieLeung/NetworkApp.git
         - TCPClientThreadFX
             - 修复服务端断开连接时，需要手动输入bye或重启才能重新连接的问题
 - 2020.10.8
-    - 更新第六周，实现了UDPServer和UDPClient    
+    - 更新第六周，实现了UDPServer和UDPClient
+- 2020.10.19
+    - 更新第七周，实现到课堂计分的功能
 
 ## 注意事项/Attention
 - 请不要将本项目用于作业的提交，仅供讨论学习！
