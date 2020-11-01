@@ -23,7 +23,7 @@ public class LookUpScoreFX extends Application {
     private TextField tfSend = new TextField();
     private TextArea taDisplay = new TextArea();
 
-    private TextField tfIP = new TextField("172.16.229.253");
+    private TextField tfIP = new TextField("202.116.195.71");
     private TextField tfPort = new TextField("9009");
     private Button btnConnect = new Button("连接");
 

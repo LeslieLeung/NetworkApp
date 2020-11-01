@@ -38,6 +38,8 @@ git clone https://github.com/LeslieLeung/NetworkApp.git
     - 更新第七周，实现到课堂计分的功能
 - 2020.10.26
     - 更新第八周，实现到课堂计分的功能
+- 2020.11.1
+    - 更新第九周，实现到更新版前功能
 
 ## 注意事项/Attention
 - 请不要将本项目用于作业的提交，仅供讨论学习！
