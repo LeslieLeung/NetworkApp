@@ -2,13 +2,11 @@ package chapter09;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -39,12 +37,16 @@ public class PortScannerFx extends Application {
     private Button btnClear = new Button("清空");
     private Button btnExit = new Button("退出");
 
-    private Thread scanThread;
+    private ProgressBar progressBar = new ProgressBar(0);
+    private Label progressLabel = new Label("0%");
 
     private String ip;
     private int startPort;
     private int endPort;
+
+    private ThreadGroup threadGroup = new ThreadGroup("scanThread");
     static AtomicInteger portCount = new AtomicInteger(0);
+
 
     public static void main(String[] args) {
         launch(args);
@@ -55,7 +57,6 @@ public class PortScannerFx extends Application {
         BorderPane mainPane = new BorderPane();
 
         VBox display = new VBox();
-//        display.prefHeight(400);
         display.setSpacing(10);
         display.setPadding(new Insets(10, 20, 10, 20));
         // 自动换行
@@ -63,7 +64,13 @@ public class PortScannerFx extends Application {
         // 只读
         taDisplay.setEditable(false);
         taDisplay.setPrefHeight(250);
-        display.getChildren().addAll(new Label("端口扫描结果:"), taDisplay);
+        progressBar.setPrefWidth(600);
+        HBox progressBox = new HBox();
+        progressBox.setAlignment(Pos.CENTER);
+        progressBox.setSpacing(10);
+        progressBox.getChildren().addAll(progressLabel, progressBar);
+
+        display.getChildren().addAll(new Label("端口扫描结果:"), taDisplay, progressBox);
         VBox.setVgrow(taDisplay, Priority.ALWAYS);
         mainPane.setTop(display);
 
@@ -80,12 +87,20 @@ public class PortScannerFx extends Application {
 
         btnStop.setDisable(true);
         btnScan.setOnAction(event -> {
-            String ip = tfTargetIp.getText();
-            int startPort = Integer.parseInt(tfStartPort.getText());
-            int endPort = Integer.parseInt(tfEndPort.getText());
-            scanThread = new Thread(() -> {
+            ip = tfTargetIp.getText();
+            startPort = Integer.parseInt(tfStartPort.getText());
+            endPort = Integer.parseInt(tfEndPort.getText());
+            progressBar.setProgress(0);
+            progressLabel.setText("0%");
+
+            int totalPorts = endPort - startPort + 1;
+            Thread scanThread = new Thread(threadGroup, () -> {
                 System.out.println("Scan start!");
                 for (int i = startPort; i <= endPort; i++) {
+                    if (Thread.currentThread().isInterrupted()) {
+                        System.out.println("interrupted!");
+                        break;
+                    }
                     String msg;
                     System.out.println("Scanning port " + i);
                     try {
@@ -96,8 +111,13 @@ public class PortScannerFx extends Application {
                         msg = "端口 " + i + " is not open\n";
                     }
                     taDisplay.appendText(msg);
+                    double progress = (double) (i-startPort) / totalPorts;
+                    Platform.runLater(() -> {
+                       progressBar.setProgress(progress);
+                       progressLabel.setText((int)(progress * 100) + "%");
+                    });
                 }
-            });
+            }, "scanThread");
             // 启用停止按钮 禁用其他按钮
             btnStop.setDisable(false);
             btnScan.setDisable(true);
@@ -107,12 +127,20 @@ public class PortScannerFx extends Application {
         });
 
         btnQuickScan.setOnAction(event -> {
-            String ip = tfTargetIp.getText();
-            int startPort = Integer.parseInt(tfStartPort.getText());
-            int endPort = Integer.parseInt(tfEndPort.getText());
-            scanThread = new Thread(() -> {
+            ip = tfTargetIp.getText();
+            startPort = Integer.parseInt(tfStartPort.getText());
+            endPort = Integer.parseInt(tfEndPort.getText());
+
+            progressBar.setProgress(0);
+            progressLabel.setText("0%");
+            int totalPorts = endPort - startPort + 1;
+            Thread scanThread = new Thread(threadGroup, () -> {
                 System.out.println("Scan start!");
                 for (int i = startPort; i <= endPort; i++) {
+                    if (Thread.currentThread().isInterrupted()) {
+                        System.out.println("interrupted!");
+                        break;
+                    }
                     String msg;
                     System.out.println("Scanning port " + i);
                     try {
@@ -124,8 +152,13 @@ public class PortScannerFx extends Application {
                         msg = "端口 " + i + " is not open\n";
                     }
                     taDisplay.appendText(msg);
+                    double progress = (double) (i-startPort) / totalPorts;
+                    Platform.runLater(() -> {
+                        progressBar.setProgress(progress);
+                        progressLabel.setText((int)(progress * 100) + "%");
+                    });
                 }
-            });
+            }, "quickScanThread");
             // 启用停止按钮 禁用其他按钮
             btnStop.setDisable(false);
             btnScan.setDisable(true);
@@ -144,10 +177,11 @@ public class PortScannerFx extends Application {
             btnQuickScan.setDisable(true);
             btnMultiThreadScan.setDisable(true);
 
-            int thread = 16;
+            int thread = 4;
+            portCount.set(0);
             for (int i = 0; i < thread; i++) {
                 ScanHandler scanHandler = new ScanHandler(i, thread);
-                new Thread(scanHandler).start();
+                new Thread(threadGroup, scanHandler, "MultiThread" + i).start();
             }
         });
 
@@ -157,7 +191,8 @@ public class PortScannerFx extends Application {
             btnQuickScan.setDisable(false);
             btnMultiThreadScan.setDisable(false);
             try {
-                scanThread.stop();
+                threadGroup.list();
+                threadGroup.interrupt();
             } catch (Exception e) {
             }
 
@@ -165,7 +200,7 @@ public class PortScannerFx extends Application {
 
         btnExit.setOnAction(event -> {
             try {
-                scanThread.stop();
+                threadGroup.interrupt();
             } catch (Exception e) {
             }
             System.exit(0);
@@ -173,7 +208,8 @@ public class PortScannerFx extends Application {
 
         btnClear.setOnAction(event -> {
             taDisplay.clear();
-            portCount.set(0);
+            progressBar.setProgress(0);
+            progressLabel.setText("0%");
         });
 
         HBox buttons = new HBox();
@@ -187,7 +223,7 @@ public class PortScannerFx extends Application {
         Scene scene = new Scene(mainPane, 700, 400);
         primaryStage.setOnCloseRequest(event -> {
             try {
-                scanThread.stop();
+                threadGroup.interrupt();
             } catch (Exception e) {
             }
             System.exit(0);
@@ -213,7 +249,17 @@ public class PortScannerFx extends Application {
 
         @Override
         public void run() {
+            System.out.println("thread created");
             for (int port = startPort + threadNo; port <= endPort; port = port + totalThreadNum) {
+                if (Thread.currentThread().isInterrupted()) {
+                    System.out.println("interrupted!");
+                    break;
+                }
+                double progress = (double) portCount.get() / (endPort - startPort + 1);
+                Platform.runLater(() -> {
+                    progressBar.setProgress(progress);
+                    progressLabel.setText((int)(progress * 100) + "%");
+                });
                 try {
                     Socket socket = new Socket();
                     socket.connect(new InetSocketAddress(ip, port), 200);
