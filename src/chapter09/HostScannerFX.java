@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -36,6 +38,8 @@ public class HostScannerFX extends Application {
 
     private Button btnScan = new Button("主机扫描");
     private Button btnExecute = new Button("执行命令");
+    private Button btnStop = new Button("停止");
+    private Button btnExit = new Button("退出");
 
     private ThreadGroup threadGroup = new ThreadGroup("scanThread");
     static AtomicInteger hostCount = new AtomicInteger(0);
@@ -124,6 +128,15 @@ public class HostScannerFX extends Application {
             scanThread.start();
         });
 
+        btnStop.setOnAction(event -> {
+            threadGroup.interrupt();
+        });
+
+        btnExit.setOnAction(event -> {
+            threadGroup.interrupt();
+            System.exit(0);
+        });
+
         HBox controls = new HBox();
         controls.setSpacing(10);
         controls.setPadding(new Insets(10, 20, 10, 20));
@@ -135,7 +148,7 @@ public class HostScannerFX extends Application {
         cmd.setSpacing(10);
         cmd.setPadding(new Insets(10, 20, 10, 20));
         cmd.setAlignment(Pos.CENTER);
-        cmd.getChildren().addAll(new Label("输入命令格式："), tfCmd, btnExecute);
+        cmd.getChildren().addAll(new Label("输入命令格式："), tfCmd, btnExecute, btnStop, btnExit);
 
         VBox vCmd = new VBox();
         vCmd.setAlignment(Pos.CENTER);
@@ -188,6 +201,17 @@ public class HostScannerFX extends Application {
                         long finalHost1 = host;
                         Platform.runLater(()->{
                             taDisplay.appendText(IpUtils.longToIp(finalHost1) + " is reachable.\n");
+                            try {
+                                Socket socket = new Socket();
+                                socket.connect(new InetSocketAddress(String.valueOf(finalHost1), 6060), 200);
+                                socket.close();
+                                String msg = IpUtils.longToIp(finalHost1) + "的端口6060开放了\n";
+                                Platform.runLater(() -> {
+                                    taDisplay.appendText(msg);
+                                });
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         });
                     }
                 } catch (IOException e) {
