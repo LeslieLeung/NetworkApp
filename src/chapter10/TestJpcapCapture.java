@@ -14,7 +14,7 @@ import java.io.IOException;
  * author: Leslie Leung
  * date: 2020/11/9
  */
-public class Test {
+public class TestJpcapCapture {
     public static void main(String[] args) throws IOException {
         NetworkInterface[] devices = JpcapCaptor.getDeviceList();
         for (int i = 0; i < devices.length; i++) {

@@ -1,12 +1,12 @@
-package chapter10;
+package chapter11;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -26,8 +26,11 @@ import java.net.URISyntaxException;
  */
 public class ConfigDialog {
     private JpcapCaptor jpcapCaptor;
+    private String keyData;
     private NetworkInterface[] devices = JpcapCaptor.getDeviceList();
     private Stage stage = new Stage();
+
+    private TextField tfKeywords = new TextField();
 
     public ConfigDialog(Stage parentStage) {
         stage.initOwner(parentStage);
@@ -70,6 +73,7 @@ public class ConfigDialog {
         });
         vBox.getChildren().addAll(new Label("请选择网卡："), comboBox,
                 link, tfFilter,
+                new Label("包中数据包含的关键字，匹配则显示数据内容（多个关键字为or关系，用空格隔开）"), tfKeywords,
                 new Label("设置抓包大小（建议介于68~1514之间）："), tfSize, checkBox,
                 new Separator(), hBoxBottom);
 
@@ -88,6 +92,7 @@ public class ConfigDialog {
                 jpcapCaptor = JpcapCaptor.openDevice(networkInterface, snapLen,
                         promisc, 20);
                 jpcapCaptor.setFilter(tfFilter.getText().trim(), true);
+                keyData = tfKeywords.getText();
                 stage.hide();
 
             } catch (Exception e) {
@@ -104,6 +109,10 @@ public class ConfigDialog {
     //主程序调用，获取设置了参数的JpcapCaptor对象
     public JpcapCaptor getJpcapCaptor() {
         return jpcapCaptor;
+    }
+
+    public String getKeyData() {
+        return keyData;
     }
 
     //主程序调用，阻塞式显示界面
