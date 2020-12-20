@@ -38,3 +38,7 @@ git clone https://github.com/LeslieLeung/NetworkApp.git
 - 若因为代码雷同出现的一切问题，后果由抄袭者自负。
 - 若发现代码中有bug，欢迎issue和pr。
 - 可通过lesily9@gmail.com联系我。
+
+## 请我喝奶茶/吃夜宵！
+![](https://ameow-1255787947.cos.ap-guangzhou.myqcloud.com/img/20201220234753.jpg)
+![](https://ameow-1255787947.cos.ap-guangzhou.myqcloud.com/img/20201220234745.jpg)
