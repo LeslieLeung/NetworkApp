@@ -48,7 +48,7 @@ public class UDPClient {
             socket.receive(inPacket);
             //将接收到的字节数组转为对应的字符串
             msg = new String(inPacket.getData(),
-                    0,inPacket.getLength(),"utf-8");
+                    0, inPacket.getLength(), "utf-8");
         } catch (IOException e) {
             e.printStackTrace();
             msg = null;

@@ -1,14 +1,11 @@
 package chapter11;
 
 import jpcap.JpcapSender;
-import jpcap.NetworkInterface;
 import jpcap.packet.EthernetPacket;
 import jpcap.packet.IPPacket;
 import jpcap.packet.TCPPacket;
 
-import java.io.IOException;
 import java.net.InetAddress;
-import java.util.Arrays;
 
 /**
  * description:

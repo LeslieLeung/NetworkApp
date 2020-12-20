@@ -58,7 +58,6 @@ public class FileDataServer {
                         break; //结束循环
                     }
                     //向输出流中输出一行字符串,远程客户端可以读取该字符串
-                    msg = msg.replaceAll("[吗?？]", "")+"!";
                     pw.println("From服务器：" + msg);
 
                 }
@@ -66,7 +65,7 @@ public class FileDataServer {
                 e.printStackTrace();
             } finally {
                 try {
-                    if(socket != null)
+                    if (socket != null)
                         socket.close(); //关闭socket连接及相关的输入输出流
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -75,7 +74,7 @@ public class FileDataServer {
         }
     }
 
-    public static void main(String[] args) throws IOException{
+    public static void main(String[] args) throws IOException {
         new FileDataServer().Service();
     }
 }

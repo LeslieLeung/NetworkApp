@@ -4,7 +4,6 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -19,7 +18,7 @@ import jpcap.PacketReceiver;
 import jpcap.packet.Packet;
 
 /**
- * description:
+ * description: 抓包图形工具
  * author: Leslie Leung
  * date: 2020/11/9
  */
@@ -132,8 +131,7 @@ public class PacketCaptureFX extends Application {
         }
     }
 
-    private void exit()
-    {
+    private void exit() {
         interrupt("captureThread");
         System.exit(0);
     }

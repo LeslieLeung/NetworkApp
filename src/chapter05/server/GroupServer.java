@@ -3,7 +3,6 @@ package chapter05.server;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
@@ -43,28 +42,14 @@ public class GroupServer {
             out = tempSocket.getOutputStream();
             pw = new PrintWriter(
                     new OutputStreamWriter(out, "utf-8"), true);
-            pw.println(hostAddress + " 发言：" + msg );
+            pw.println(hostAddress + " 发言：" + msg);
         }
-
-
-//        Socket tempSocket;
-//
-//        Iterator<Socket> iterator = members.iterator();
-//        while (iterator.hasNext()) {//遍历在线客户Set集合
-//            tempSocket = iterator.next(); //取出一个客户的socket
-////            String hostName = tempSocket.getInetAddress().getHostName();
-////            String hostAddress = tempSocket.getInetAddress().getHostAddress();
-//            out = tempSocket.getOutputStream();
-//            pw = new PrintWriter(
-//                    new OutputStreamWriter(out, "utf-8"), true);
-//            pw.println(tempSocket.getInetAddress() + " 发言：" + msg );
-//        }
 
     }
 
-    class Handler implements Runnable
-    {
+    class Handler implements Runnable {
         private Socket socket;
+
         public Handler(Socket socket) {
             this.socket = socket;
         }
@@ -100,9 +85,9 @@ public class GroupServer {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
-            }finally {
+            } finally {
                 try {
-                    if(socket != null) {
+                    if (socket != null) {
                         socket.close(); //关闭socket连接及相关的输入输出流
                     }
                 } catch (IOException e) {
@@ -122,7 +107,7 @@ public class GroupServer {
         }
     }
 
-    public static void main(String[] args) throws IOException{
+    public static void main(String[] args) throws IOException {
         new GroupServer().Service();
     }
 }

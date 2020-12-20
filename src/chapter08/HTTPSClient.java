@@ -3,14 +3,13 @@ package chapter08;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 
 /**
  * description:
  * author: Leslie Leung
  * date: 2020/10/26
  */
-public class HTTPSClient extends Client{
+public class HTTPSClient extends Client {
     private SSLSocket socket;
     private SSLSocketFactory factory;
 
@@ -51,6 +50,7 @@ public class HTTPSClient extends Client{
         }
         return msg;
     }
+
     @Override
     public void close() {
         try {

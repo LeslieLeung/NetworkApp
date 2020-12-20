@@ -48,6 +48,7 @@ public class TCPMailClient {
         }
         return msg;
     }
+
     public void close() {
         try {
             if (socket != null) {
@@ -58,9 +59,10 @@ public class TCPMailClient {
             e.printStackTrace();
         }
     }
+
     //本机模块内测试与运行，需先运行TCPServer
     public static void main(String[] args) throws IOException {
-        TCPMailClient tcpMailClient = new TCPMailClient("127.0.0.1" ,"8008");
+        TCPMailClient tcpMailClient = new TCPMailClient("127.0.0.1", "8008");
         tcpMailClient.send("hello");//发送一串字符
         //接收服务器返回的字符串并显示
         System.out.println(tcpMailClient.receive());

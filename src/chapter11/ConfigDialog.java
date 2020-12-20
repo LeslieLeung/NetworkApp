@@ -41,7 +41,7 @@ public class ConfigDialog {
         VBox vBox = new VBox();
         vBox.setAlignment(Pos.CENTER_LEFT);
         vBox.setSpacing(10);
-        vBox.setPadding(new Insets(10, 20 ,10 ,20));
+        vBox.setPadding(new Insets(10, 20, 10, 20));
 
         ComboBox<String> comboBox = new ComboBox<>();
         comboBox.setMaxWidth(800);

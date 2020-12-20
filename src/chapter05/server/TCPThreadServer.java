@@ -31,9 +31,9 @@ public class TCPThreadServer {
                 new InputStreamReader(socketIn, "utf-8"));
     }
 
-    class Handler implements Runnable
-    {
+    class Handler implements Runnable {
         private Socket socket;
+
         public Handler(Socket socket) {
             this.socket = socket;
         }
@@ -65,9 +65,9 @@ public class TCPThreadServer {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
-            }finally {
+            } finally {
                 try {
-                    if(socket != null) {
+                    if (socket != null) {
                         socket.close(); //关闭socket连接及相关的输入输出流
                     }
                 } catch (IOException e) {
@@ -87,7 +87,7 @@ public class TCPThreadServer {
         }
     }
 
-    public static void main(String[] args) throws IOException{
+    public static void main(String[] args) throws IOException {
         new TCPThreadServer().Service();
     }
 }

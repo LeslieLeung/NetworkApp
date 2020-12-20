@@ -72,28 +72,20 @@ public class UDPClientFX extends Application {
             String port = tfPort.getText().trim();
 
             try {
-                //tcpClient不是局部变量，是本程序定义的一个TCPClient类型的成员变量
                 udpClient = new UDPClient(ip, port);
-                // 启用发送按钮
-                btnSend.setDisable(false);
-                // 停用连接按钮
-                btnConnect.setDisable(true);
                 // 启用接收信息进程
                 readThread = new Thread(() -> {
                     String msg = null;
                     // 新增线程是否中断条件 解决退出时出现异常问题
                     while ((msg = udpClient.receive()) != null) {
+                        if (Thread.currentThread().isInterrupted()) {
+                            continue;
+                        }
                         String msgTemp = msg;
                         Platform.runLater(() -> {
                             taDisplay.appendText(msgTemp + "\n");
                         });
                     }
-                    Platform.runLater(() -> {
-                        taDisplay.appendText("对话已关闭！\n");
-                        // 连接断开后重新开放连接按钮
-                        btnSend.setDisable(true);
-                        btnConnect.setDisable(false);
-                    });
                 });
                 readThread.start();
             } catch (Exception e) {
@@ -105,42 +97,16 @@ public class UDPClientFX extends Application {
             exit();
         });
         btnSend.setOnAction(event -> {
-//            String sendMsg = tfSend.getText();
-//            udpClient.send(sendMsg);//向服务器发送一串字符
-//            taDisplay.appendText("客户端发送：" + sendMsg + "\n");
-//            tfSend.clear();
-//            // 发送bye后重新启用连接按钮，禁用发送按钮
-//            if (sendMsg.equals("bye")) {
-//                btnConnect.setDisable(false);
-//                btnSend.setDisable(true);
-//            }
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("20181002872&梁凌峰\n");
-            stringBuilder.append("1604907963:948947 /192.168.0.111->/202.116.192.6 protocol(6) priority(0)  hop(128)  offset(0) ident(50247) TCP 12986 > 443 seq(3544140399) win(64240)  S\n");
-            stringBuilder.append("1604907963:950847 /202.116.192.6->/192.168.0.111 protocol(6) priority(0)  hop(57)  offset(0) ident(0) TCP 443 > 12986 seq(1475340672) win(29200) ack 3544140400  S\n");
-            stringBuilder.append("1604907963:950954 /192.168.0.111->/202.116.192.6 protocol(6) priority(0)  hop(128)  offset(0) ident(50249) TCP 12986 > 443 seq(3544140400) win(1026) ack 1475340673");
-            String sendMsg = stringBuilder.toString();
-            udpClient.send(sendMsg);
+            String sendMsg = tfSend.getText();
+            // 修改这里可以发送自定义消息
+            udpClient.send(sendMsg);//向服务器发送一串字符
             taDisplay.appendText("客户端发送：" + sendMsg + "\n");
-
+            tfSend.clear();
         });
 
-
-        // 未连接时禁用发送按钮
-        btnSend.setDisable(true);
         hBox.getChildren().addAll(btnSend, btnExit);
         mainPane.setBottom(hBox);
         Scene scene = new Scene(mainPane, 700, 400);
-
-        // 回车响应功能
-        scene.addEventFilter(KeyEvent.KEY_RELEASED, new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                if (event.getCode() == KeyCode.ENTER) {
-                    sendText();
-                }
-            }
-        });
 
         // 响应窗体关闭
         primaryStage.setOnCloseRequest(event -> {
@@ -158,8 +124,7 @@ public class UDPClientFX extends Application {
         }
         // 系统退出时，单独的读线程没有结束，因此会出现异常。
         // 解决方案：在这里通知线程中断，在线程循环中增加条件检测当前线程是否被中断。
-//        readThread.interrupt();
-        readThread.stop();
+        readThread.interrupt();
         System.exit(0);
     }
 

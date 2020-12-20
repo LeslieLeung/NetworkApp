@@ -11,6 +11,7 @@ public class DBOperate1 {
     public static void main(String[] args) throws SQLException {
         Connection connection = null;
         try {
+            // 此处需要根据mysql版本修改
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection("jdbc:mysql://localhost:3307/STUDENTDB2?characterEncoding=utf8&useSSL=false&serverTimezone=Hongkong", "root", "password");
 

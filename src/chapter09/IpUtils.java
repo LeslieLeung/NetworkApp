@@ -9,7 +9,7 @@ public class IpUtils {
     public static int ipToInt(String ip) {
         String[] ipArray = ip.split("\\.");
         int num = 0;
-        for (int i=0;i<ipArray.length;i++) {
+        for (int i = 0; i < ipArray.length; i++) {
             int valueOfSection = Integer.parseInt(ipArray[i]);
             num = (valueOfSection << 8 * (3 - i)) | num;
         }
@@ -44,10 +44,10 @@ public class IpUtils {
     public static String longToIp(long longIp) {
         //采用SB方便追加分隔符 "."
         StringBuffer sb = new StringBuffer("");
-        sb.append(String.valueOf(longIp>>24)).append(".").
-                append(String.valueOf((longIp&0x00ffffff)>>16)).append(".").
-                append(String.valueOf((longIp&0x0000ffff)>>8)).append(".").
-                append(String.valueOf(longIp&0x000000ff));
+        sb.append(String.valueOf(longIp >> 24)).append(".").
+                append(String.valueOf((longIp & 0x00ffffff) >> 16)).append(".").
+                append(String.valueOf((longIp & 0x0000ffff) >> 8)).append(".").
+                append(String.valueOf(longIp & 0x000000ff));
         return sb.toString();
     }
 
@@ -57,10 +57,7 @@ public class IpUtils {
         System.out.println(intIP = ipToInt("192.168.0.1"));
         System.out.println(ipToInt("192.168.0.254"));
         System.out.println(intToIp(intIP));
-//        System.out.println(ipToInt("122.1.0.127"));
-//        System.out.println(ipToInt("122.1.0.128"));
         System.out.println(ipToLong("192.168.0.127"));
-        System.out.println(ipToLong("192.168.0.128"));
     }
 
 }

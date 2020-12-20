@@ -13,7 +13,7 @@ import java.rmi.registry.Registry;
  */
 public class HelloServer {
     public static void main(String[] args) {
-        try{
+        try {
             Registry registry = LocateRegistry.createRegistry(1099);
             HelloService helloService = new HelloServerImpl("远程服务");
             registry.rebind("HelloService", helloService);

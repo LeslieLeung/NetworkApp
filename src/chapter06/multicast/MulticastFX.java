@@ -41,6 +41,9 @@ public class MulticastFX extends Application {
         readThread = new Thread(() -> {
             String msg = null;
             while (true) {
+                if (Thread.currentThread().isInterrupted()) {
+                    continue;
+                }
                 msg = multicast.receive();
                 String msgTemp = msg;
                 Platform.runLater(() -> {
@@ -86,18 +89,6 @@ public class MulticastFX extends Application {
         mainPane.setBottom(hBox);
         Scene scene = new Scene(mainPane, 700, 400);
 
-        // 回车响应功能
-        scene.addEventFilter(KeyEvent.KEY_RELEASED, new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                if(event.getCode() == KeyCode.ENTER) {
-                    String sendMsg = tfSend.getText();
-                    multicast.send(sendMsg);
-                    tfSend.clear();
-                }
-            }
-        });
-
         // 响应窗体关闭
         primaryStage.setOnCloseRequest(event -> {
             exit();
@@ -114,8 +105,7 @@ public class MulticastFX extends Application {
         }
         // 系统退出时，单独的读线程没有结束，因此会出现异常。
         // 解决方案：在这里通知线程中断，在线程循环中增加条件检测当前线程是否被中断。
-//        readThread.interrupt();
-        readThread.stop();
+        readThread.interrupt();
         System.exit(0);
     }
 

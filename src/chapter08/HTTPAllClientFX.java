@@ -81,7 +81,7 @@ public class HTTPAllClientFX extends Application {
                     btnConnect.setDisable(true);
                     isConnected = true;
                     // 启用接收信息进程
-                    readThread = new Thread(()->{
+                    readThread = new Thread(() -> {
                         String msg = null;
                         // 新增线程是否中断条件 解决退出时出现异常问题
                         while ((msg = client.receive()) != null) {
@@ -105,17 +105,15 @@ public class HTTPAllClientFX extends Application {
             } else {
                 try {
                     //tcpClient不是局部变量，是本程序定义的一个TCPClient类型的成员变量
-                    client = new HTTPClient(ip,port);
+                    client = new HTTPClient(ip, port);
                     //成功连接服务器，接收服务器发来的第一条欢迎信息
-//                String firstMsg = tcpClient.receive();
-//                taDisplay.appendText(firstMsg + "\n");
                     // 启用发送按钮
                     btnSend.setDisable(false);
                     // 停用连接按钮
                     btnConnect.setDisable(true);
                     isConnected = true;
                     // 启用接收信息进程
-                    readThread = new Thread(()->{
+                    readThread = new Thread(() -> {
                         String msg = null;
                         // 新增线程是否中断条件 解决退出时出现异常问题
                         while ((msg = client.receive()) != null) {
@@ -167,7 +165,7 @@ public class HTTPAllClientFX extends Application {
         scene.addEventFilter(KeyEvent.KEY_RELEASED, new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
-                if(event.getCode() == KeyCode.ENTER) {
+                if (event.getCode() == KeyCode.ENTER) {
                     sendText();
                 }
             }
@@ -212,12 +210,12 @@ public class HTTPAllClientFX extends Application {
     public void sendHeader() {
         StringBuilder header = new StringBuilder();
         header.append("GET / HTTP/1.1" + "\n");
-        header.append("HOST: ").append(tfIP.getText().trim()+"\n");
-        header.append("Accept: */*"+"\n");
+        header.append("HOST: ").append(tfIP.getText().trim() + "\n");
+        header.append("Accept: */*" + "\n");
 //        header.append("Accept-Encoding: gzip, deflate, br\n");
-        header.append("Accept-Language: zh-cn"+"\n");
-        header.append("User-Agent: User-Agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36)"+"\n");
-        header.append("Connection: Keepalive"+"\n");
+        header.append("Accept-Language: zh-cn" + "\n");
+        header.append("User-Agent: User-Agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36)" + "\n");
+        header.append("Connection: Keepalive" + "\n");
 //        header.append("Cache-Control: max-age=0\n");
         String header_ = header.toString();
         System.out.println(header_);

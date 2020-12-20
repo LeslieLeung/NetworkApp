@@ -1,6 +1,5 @@
 package chapter08;
 
-import chapter05.client.TCPClient;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -74,7 +73,7 @@ public class HTTPSClientFX extends Application {
 
             try {
                 //tcpClient不是局部变量，是本程序定义的一个TCPClient类型的成员变量
-                httpsClient = new HTTPSClient(ip,port);
+                httpsClient = new HTTPSClient(ip, port);
                 //成功连接服务器，接收服务器发来的第一条欢迎信息
 //                String firstMsg = tcpClient.receive();
 //                taDisplay.appendText(firstMsg + "\n");
@@ -84,7 +83,7 @@ public class HTTPSClientFX extends Application {
                 btnConnect.setDisable(true);
                 isConnected = true;
                 // 启用接收信息进程
-                readThread = new Thread(()->{
+                readThread = new Thread(() -> {
                     String msg = null;
                     // 新增线程是否中断条件 解决退出时出现异常问题
                     while ((msg = httpsClient.receive()) != null) {
@@ -135,7 +134,7 @@ public class HTTPSClientFX extends Application {
         scene.addEventFilter(KeyEvent.KEY_RELEASED, new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
-                if(event.getCode() == KeyCode.ENTER) {
+                if (event.getCode() == KeyCode.ENTER) {
                     sendText();
                 }
             }
@@ -181,10 +180,10 @@ public class HTTPSClientFX extends Application {
         // 坑点：baidu可以识别\n(LF)，但gdufs需要使用\r\n(CRLF)，原因是gdufs的服务器是win的系统
         StringBuilder header = new StringBuilder();
         header.append("GET / HTTP/1.1" + "\r\n");
-        header.append("HOST: "+tfIP.getText().trim()+"\r\n");
-        header.append("Connection: keep-alive"+"\r\n");
-        header.append("Accept: */*"+"\r\n");
-        header.append("Accept-Language: zh-cn"+"\r\n");
+        header.append("HOST: " + tfIP.getText().trim() + "\r\n");
+        header.append("Connection: keep-alive" + "\r\n");
+        header.append("Accept: */*" + "\r\n");
+        header.append("Accept-Language: zh-cn" + "\r\n");
         header.append("User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)\r\n");
 
         String header_ = header.toString();

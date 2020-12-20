@@ -3,14 +3,13 @@ package chapter10;
 import jpcap.JpcapCaptor;
 import jpcap.NetworkInterface;
 import jpcap.NetworkInterfaceAddress;
-import jpcap.PacketReceiver;
 import jpcap.packet.Packet;
 
 import java.io.IOException;
 
 
 /**
- * description:
+ * description: Jpcap测试
  * author: Leslie Leung
  * date: 2020/11/9
  */
@@ -19,7 +18,7 @@ public class TestJpcapCapture {
         NetworkInterface[] devices = JpcapCaptor.getDeviceList();
         for (int i = 0; i < devices.length; i++) {
             //print out its GUID information and description
-            System.out.println(i+": "+devices[i].name + devices[i].description);
+            System.out.println(i + ": " + devices[i].name + devices[i].description);
             //print out its MAC address
             String mac = "";
             for (byte b : devices[i].mac_address) {
@@ -29,13 +28,12 @@ public class TestJpcapCapture {
             System.out.println("MAC address:" + mac.substring(0, mac.length() - 1));
             //print out its IP address, subnet mask and broadcast address
             for (NetworkInterfaceAddress addr : devices[i].addresses) {
-                System.out.println(" address:"+addr.address + " " + addr.subnet + " "+ addr.broadcast );
+                System.out.println(" address:" + addr.address + " " + addr.subnet + " " + addr.broadcast);
             }
         }
         JpcapCaptor jpcapCaptor = JpcapCaptor.openDevice(devices[4], 1514, true, 20);
         Packet packet = jpcapCaptor.getPacket();
         System.out.println(packet);
         jpcapCaptor.close();
-
     }
 }

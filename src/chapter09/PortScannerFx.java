@@ -2,7 +2,6 @@ package chapter09;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -111,10 +110,10 @@ public class PortScannerFx extends Application {
                         msg = "端口 " + i + " is not open\n";
                     }
                     taDisplay.appendText(msg);
-                    double progress = (double) (i-startPort) / totalPorts;
+                    double progress = (double) (i - startPort) / totalPorts;
                     Platform.runLater(() -> {
-                       progressBar.setProgress(progress);
-                       progressLabel.setText((int)(progress * 100) + "%");
+                        progressBar.setProgress(progress);
+                        progressLabel.setText((int) (progress * 100) + "%");
                     });
                 }
             }, "scanThread");
@@ -152,10 +151,10 @@ public class PortScannerFx extends Application {
                         msg = "端口 " + i + " is not open\n";
                     }
                     taDisplay.appendText(msg);
-                    double progress = (double) (i-startPort) / totalPorts;
+                    double progress = (double) (i - startPort) / totalPorts;
                     Platform.runLater(() -> {
                         progressBar.setProgress(progress);
-                        progressLabel.setText((int)(progress * 100) + "%");
+                        progressLabel.setText((int) (progress * 100) + "%");
                     });
                 }
             }, "quickScanThread");
@@ -258,7 +257,7 @@ public class PortScannerFx extends Application {
                 double progress = (double) portCount.get() / (endPort - startPort + 1);
                 Platform.runLater(() -> {
                     progressBar.setProgress(progress);
-                    progressLabel.setText((int)(progress * 100) + "%");
+                    progressLabel.setText((int) (progress * 100) + "%");
                 });
                 try {
                     Socket socket = new Socket();

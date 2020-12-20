@@ -108,34 +108,11 @@ public class TCPClientFX extends Application {
             }
         });
 
-
-
         // 未连接时禁用发送按钮
         btnSend.setDisable(true);
         hBox.getChildren().addAll(btnSend, btnExit);
         mainPane.setBottom(hBox);
         Scene scene = new Scene(mainPane, 700, 400);
-
-//        // 回车响应功能
-//        scene.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
-//            final KeyCombination keyCombination = new KeyCodeCombination(KeyCode.ENTER, KeyCombination.SHIFT_DOWN);
-//
-//            @Override
-//            public void handle(KeyEvent event) {
-//                if (event.getCode() == KeyCode.ENTER) {
-//                    String sendMsg = tfSend.getText();
-//                    tcpClient.send(sendMsg);//向服务器发送一串字符
-//                    taDisplay.appendText("客户端发送：" + sendMsg + "\n");
-//                    String receiveMsg = tcpClient.receive();//从服务器接收一行字符
-//                    taDisplay.appendText(receiveMsg + "\n");
-//                    // 发送bye后重新启用连接按钮，禁用发送按钮
-//                    if (sendMsg.equals("bye")) {
-//                        btnConnect.setDisable(false);
-//                        btnSend.setDisable(true);
-//                    }
-//                }
-//            }
-//        });
 
         // 响应窗体关闭
         primaryStage.setOnCloseRequest(event -> {

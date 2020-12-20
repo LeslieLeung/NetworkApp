@@ -12,7 +12,8 @@ public class TextFileIO {
     private PrintWriter pw = null;
     private Scanner sc = null;
 
-    public TextFileIO(){}
+    public TextFileIO() {
+    }
 
     public void append(String msg) {
         FileChooser fileChooser = new FileChooser();
@@ -22,10 +23,10 @@ public class TextFileIO {
         }
         try {
             pw = new PrintWriter(new OutputStreamWriter(
-                    new FileOutputStream(file, true),"utf-8"
+                    new FileOutputStream(file, true), "utf-8"
             ));
             pw.println(msg);
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             pw.close();
@@ -49,6 +50,6 @@ public class TextFileIO {
         } finally {
             sc.close();
         }
-        return  sb.toString();
+        return sb.toString();
     }
 }

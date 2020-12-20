@@ -116,6 +116,7 @@ public class FileDialogServer extends Thread{
 
     public static void main(String[] args) throws IOException{
         ServerSocket FileDialogServer = new ServerSocket(2021);
+        // 此处多线程实现并非最佳实践，参考chapter05/server下几个server的实现
         while(true) {
             Socket clientSocket = FileDialogServer.accept();
             new FileDialogServer(clientSocket).start();

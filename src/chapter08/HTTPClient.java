@@ -3,7 +3,7 @@ package chapter08;
 import java.io.*;
 import java.net.Socket;
 
-public class HTTPClient extends Client{
+public class HTTPClient extends Client {
     private Socket socket; //定义套接字
     //定义字符输入流和输出流
     private PrintWriter pw;
@@ -45,6 +45,7 @@ public class HTTPClient extends Client{
         }
         return msg;
     }
+
     public void close() {
         try {
             if (socket != null) {
@@ -55,9 +56,10 @@ public class HTTPClient extends Client{
             e.printStackTrace();
         }
     }
+
     //本机模块内测试与运行，需先运行TCPServer
     public static void main(String[] args) throws IOException {
-        HTTPClient HTTPClient = new HTTPClient("127.0.0.1" ,"8008");
+        HTTPClient HTTPClient = new HTTPClient("127.0.0.1", "8008");
         HTTPClient.send("hello");//发送一串字符
         //接收服务器返回的字符串并显示
         System.out.println(HTTPClient.receive());

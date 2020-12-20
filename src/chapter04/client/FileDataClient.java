@@ -31,7 +31,7 @@ public class FileDataClient {
             pw.println(saveFile.getName());
 
             int size = 0;
-            while((size = socketIn.read(buf)) != -1) {
+            while ((size = socketIn.read(buf)) != -1) {
                 fileOut.write(buf, 0, size);
             }
             fileOut.flush();

@@ -43,6 +43,7 @@ public class FileDialogClient {
         }
         return msg;
     }
+
     public void close() {
         try {
             if (socket != null) {
@@ -53,9 +54,10 @@ public class FileDialogClient {
             e.printStackTrace();
         }
     }
+
     //本机模块内测试与运行，需先运行TCPServer
     public static void main(String[] args) throws IOException {
-        FileDialogClient tcpClient = new FileDialogClient("127.0.0.1" ,"8008");
+        FileDialogClient tcpClient = new FileDialogClient("127.0.0.1", "8008");
         tcpClient.send("hello");//发送一串字符
         //接收服务器返回的字符串并显示
         System.out.println(tcpClient.receive());

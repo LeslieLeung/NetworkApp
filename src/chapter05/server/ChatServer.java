@@ -4,7 +4,6 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -52,20 +51,6 @@ public class ChatServer {
                     new OutputStreamWriter(out, "utf-8"), true);
             pw.println(hostAddress + " 发言：" + msg);
         }
-
-//        Socket tempSocket;
-//
-//        Iterator<Socket> iterator = members.iterator();
-//        while (iterator.hasNext()) {//遍历在线客户Set集合
-//            tempSocket = iterator.next(); //取出一个客户的socket
-////            String hostName = tempSocket.getInetAddress().getHostName();
-////            String hostAddress = tempSocket.getInetAddress().getHostAddress();
-//            out = tempSocket.getOutputStream();
-//            pw = new PrintWriter(
-//                    new OutputStreamWriter(out, "utf-8"), true);
-//            pw.println(tempSocket.getInetAddress() + " 发言：" + msg );
-//        }
-
     }
 
     private void notifyAllMembers(String msg) throws IOException {
@@ -130,7 +115,7 @@ public class ChatServer {
                         System.out.println("私聊模式");
                         // 一对一或一对多私聊
                         StringBuilder privateMsg = new StringBuilder();
-                        privateMsg.append(members.get(socket)+"发送给你的私聊信息：");
+                        privateMsg.append(members.get(socket) + "发送给你的私聊信息：");
 
                         // 将信息分段处理
                         // 预期信息格式为"[@学号（11位数字）-姓名]*n '[msg]'"
@@ -150,7 +135,7 @@ public class ChatServer {
 
                         // 匹配发送信息
                         Pattern msgpat = Pattern.compile("'(.*)'");
-                        for (String str:all) {
+                        for (String str : all) {
                             Matcher matcher = msgpat.matcher(str);
                             if (matcher.find()) {
                                 privateMsg.append(matcher.group(1));
@@ -159,7 +144,7 @@ public class ChatServer {
 
                         // 确定要发送的socket集合
                         Set recepientSockets = new CopyOnWriteArraySet<Socket>();
-                        recipients.forEach((receiver)-> {
+                        recipients.forEach((receiver) -> {
                             Socket tempSocket = membersR.get(receiver);
                             recepientSockets.add(tempSocket);
                         });
@@ -191,8 +176,7 @@ public class ChatServer {
                     } else if (!members.containsKey(socket)) {
                         // 如果全部都无匹配，且未登录，则肯定为输入格式出错（指不满足学号-姓名的格式），报错
                         pw.println("From 服务器：输入格式有误，请检查后重新发送");
-                    }
-                    else {
+                    } else {
                         // 群发
                         sendToAllMembers(msg, members.get(socket));
                     }

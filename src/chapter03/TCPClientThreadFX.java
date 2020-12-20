@@ -68,7 +68,7 @@ public class TCPClientThreadFX extends Application {
 
             try {
                 //tcpClient不是局部变量，是本程序定义的一个TCPClient类型的成员变量
-                tcpClient = new TCPClient(ip,port);
+                tcpClient = new TCPClient(ip, port);
                 //成功连接服务器，接收服务器发来的第一条欢迎信息
                 String firstMsg = tcpClient.receive();
                 taDisplay.appendText(firstMsg + "\n");
@@ -77,13 +77,18 @@ public class TCPClientThreadFX extends Application {
                 // 停用连接按钮
                 btnConnect.setDisable(true);
                 // 启用接收信息进程
-                readThread = new Thread(()->{
+                readThread = new Thread(() -> {
                     String msg = null;
                     while ((msg = tcpClient.receive()) != null) {
                         String msgTemp = msg;
                         Platform.runLater(() -> {
                             taDisplay.appendText(msgTemp + "\n");
                         });
+                        if (Thread.currentThread().isInterrupted()) {
+                            tcpClient.send("bye");
+                            tcpClient.close();
+                            continue;
+                        }
                     }
                     Platform.runLater(() -> {
                         taDisplay.appendText("对话已关闭！\n");
@@ -102,8 +107,6 @@ public class TCPClientThreadFX extends Application {
             String sendMsg = tfSend.getText();
             tcpClient.send(sendMsg);//向服务器发送一串字符
             taDisplay.appendText("客户端发送：" + sendMsg + "\n");
-//            String receiveMsg = tcpClient.receive();//从服务器接收一行字符
-//            taDisplay.appendText(receiveMsg + "\n");
             tfSend.clear();
             // 发送bye后重新启用连接按钮，禁用发送按钮
             if (sendMsg.equals("bye")) {
@@ -119,27 +122,6 @@ public class TCPClientThreadFX extends Application {
         mainPane.setBottom(hBox);
         Scene scene = new Scene(mainPane, 700, 400);
 
-//        // 回车响应功能
-//        scene.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
-//            final KeyCombination keyCombination = new KeyCodeCombination(KeyCode.ENTER, KeyCombination.SHIFT_DOWN);
-//
-//            @Override
-//            public void handle(KeyEvent event) {
-//                if (event.getCode() == KeyCode.ENTER) {
-//                    String sendMsg = tfSend.getText();
-//                    tcpClient.send(sendMsg);//向服务器发送一串字符
-//                    taDisplay.appendText("客户端发送：" + sendMsg + "\n");
-//                    String receiveMsg = tcpClient.receive();//从服务器接收一行字符
-//                    taDisplay.appendText(receiveMsg + "\n");
-//                    // 发送bye后重新启用连接按钮，禁用发送按钮
-//                    if (sendMsg.equals("bye")) {
-//                        btnConnect.setDisable(false);
-//                        btnSend.setDisable(true);
-//                    }
-//                }
-//            }
-//        });
-
         // 响应窗体关闭
         primaryStage.setOnCloseRequest(event -> {
             exit();
@@ -151,8 +133,7 @@ public class TCPClientThreadFX extends Application {
 
     public void exit() {
         if (tcpClient != null) {
-            tcpClient.send("bye");
-            tcpClient.close();
+            readThread.interrupt();
         }
         System.exit(0);
     }

@@ -70,7 +70,7 @@ public class TCPClientThreadFX extends Application {
 
             try {
                 //tcpClient不是局部变量，是本程序定义的一个TCPClient类型的成员变量
-                tcpClient = new TCPClient(ip,port);
+                tcpClient = new TCPClient(ip, port);
                 //成功连接服务器，接收服务器发来的第一条欢迎信息
                 String firstMsg = tcpClient.receive();
                 taDisplay.appendText(firstMsg + "\n");
@@ -79,7 +79,7 @@ public class TCPClientThreadFX extends Application {
                 // 停用连接按钮
                 btnConnect.setDisable(true);
                 // 启用接收信息进程
-                readThread = new Thread(()->{
+                readThread = new Thread(() -> {
                     String msg = null;
                     // 新增线程是否中断条件 解决退出时出现异常问题
                     while ((msg = tcpClient.receive()) != null) {
@@ -127,7 +127,7 @@ public class TCPClientThreadFX extends Application {
         scene.addEventFilter(KeyEvent.KEY_RELEASED, new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
-                if(event.getCode() == KeyCode.ENTER) {
+                if (event.getCode() == KeyCode.ENTER) {
                     sendText();
                 }
             }
@@ -149,7 +149,7 @@ public class TCPClientThreadFX extends Application {
         }
         // 系统退出时，单独的读线程没有结束，因此会出现异常。
         // 解决方案：在这里通知线程中断，在线程循环中增加条件检测当前线程是否被中断。
-//        readThread.interrupt();
+        // p.s. 此处使用的thread.stop()为deprecated的函数，应使用interrupt，正确写法见chapter03/TCPClientThreadFX
         readThread.stop();
         System.exit(0);
     }

@@ -66,6 +66,7 @@ public class HostScannerFX extends Application {
         VBox.setVgrow(taDisplay, Priority.ALWAYS);
         mainPane.setCenter(display);
 
+//        // 单线程版本
 //        btnScan.setOnAction(event -> {
 //            String startIp = tfStartIp.getText();
 //            String endIp = tfEndIp.getText();
@@ -99,7 +100,8 @@ public class HostScannerFX extends Application {
             this.startIp = IpUtils.ipToLong(tfStartIp.getText());
             this.endIp = IpUtils.ipToLong(tfEndIp.getText());
 
-            int thread = 16;
+            // 线程数，建议根据实际机器调整
+            int thread = 4;
             hostCount.set(0);
             for (int i = 0; i < thread; i++) {
                 ScanHandler scanHandler = new ScanHandler(i, thread);
@@ -199,7 +201,7 @@ public class HostScannerFX extends Application {
                     boolean res = isReachable(IpUtils.longToIp(host));
                     if (res) {
                         long finalHost1 = host;
-                        Platform.runLater(()->{
+                        Platform.runLater(() -> {
                             taDisplay.appendText(IpUtils.longToIp(finalHost1) + " is reachable.\n");
                             try {
                                 Socket socket = new Socket();
@@ -219,7 +221,7 @@ public class HostScannerFX extends Application {
                 }
                 hostCount.incrementAndGet();
             }
-            if (hostCount.get() == (endIp - startIp +1)) {
+            if (hostCount.get() == (endIp - startIp + 1)) {
                 hostCount.incrementAndGet();
                 Platform.runLater(() -> {
                     taDisplay.appendText("扫描完毕");

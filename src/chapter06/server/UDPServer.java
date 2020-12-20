@@ -55,7 +55,7 @@ public class UDPServer {
 
     private String doAlter(String msg) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("20181002872&梁凌峰&");
+        stringBuilder.append("***");
         String date = new Date().toString();
         stringBuilder.append(date);
         stringBuilder.append("&");
@@ -87,8 +87,10 @@ public class UDPServer {
                 ip = null;
                 port = 0;
             }
-            send(doAlter(msg), ip, port);
-
+//            // 判分用
+//            send(doAlter(msg), ip, port);
+            assert msg != null;
+            send(msg, ip, port);
         }
     }
 

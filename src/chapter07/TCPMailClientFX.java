@@ -71,7 +71,7 @@ public class TCPMailClientFX extends Application {
 
             try {
                 //tcpClient不是局部变量，是本程序定义的一个TCPClient类型的成员变量
-                tcpClient = new TCPClient(ip,port);
+                tcpClient = new TCPClient(ip, port);
                 //成功连接服务器，接收服务器发来的第一条欢迎信息
                 String firstMsg = tcpClient.receive();
                 taDisplay.appendText(firstMsg + "\n");
@@ -80,7 +80,7 @@ public class TCPMailClientFX extends Application {
                 // 停用连接按钮
                 btnConnect.setDisable(true);
                 // 启用接收信息进程
-                readThread = new Thread(()->{
+                readThread = new Thread(() -> {
                     String msg = null;
                     while ((msg = tcpClient.receive()) != null) {
                         String msgTemp = msg;
@@ -127,7 +127,7 @@ public class TCPMailClientFX extends Application {
         scene.addEventFilter(KeyEvent.KEY_RELEASED, new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
-                if(event.getCode() == KeyCode.ENTER) {
+                if (event.getCode() == KeyCode.ENTER) {
                     sendText();
                 }
             }

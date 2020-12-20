@@ -65,8 +65,7 @@ public class NetworkChoiceDialog {
         });
     }
 
-    public JpcapSender getSender()
-    {
+    public JpcapSender getSender() {
         return sender;
     }
 

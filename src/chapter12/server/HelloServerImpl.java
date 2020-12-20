@@ -14,7 +14,7 @@ import java.util.Date;
 public class HelloServerImpl extends UnicastRemoteObject implements HelloService {
     private String name;
 
-    public HelloServerImpl() throws RemoteException{
+    public HelloServerImpl() throws RemoteException {
 
     }
 
