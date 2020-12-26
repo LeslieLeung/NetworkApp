@@ -1,6 +1,6 @@
 package chapter12.server;
 
-import rmi.HelloService;
+import chapter12.rmi.HelloService;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;

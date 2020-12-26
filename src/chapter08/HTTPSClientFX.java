@@ -94,6 +94,7 @@ public class HTTPSClientFX extends Application {
                     }
                     Platform.runLater(() -> {
                         taDisplay.appendText("对话已关闭！\n");
+                        isConnected = false;
                         // 连接断开后重新开放连接按钮
                         btnSend.setDisable(true);
                         btnConnect.setDisable(false);
@@ -156,6 +157,7 @@ public class HTTPSClientFX extends Application {
         }
         // 系统退出时，单独的读线程没有结束，因此会出现异常。
         // 解决方案：在这里通知线程中断，在线程循环中增加条件检测当前线程是否被中断。
+        // FIXME interrupt()
 //        readThread.interrupt();
         if (isConnected) {
             readThread.stop();
@@ -176,6 +178,9 @@ public class HTTPSClientFX extends Application {
         }
     }
 
+    /**
+     * 设置请求头
+     */
     public void sendHeader() {
         // 坑点：baidu可以识别\n(LF)，但gdufs需要使用\r\n(CRLF)，原因是gdufs的服务器是win的系统
         StringBuilder header = new StringBuilder();

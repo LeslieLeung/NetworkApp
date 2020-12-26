@@ -1,7 +1,8 @@
 package chapter08;
 
 /**
- * description:
+ * description: Client基类
+ * HTTPClient和HTTPSClient通过继承本类实现在FX里面只需要有一个Client就可以调用http或https
  * author: Leslie Leung
  * date: 2020/10/26
  */

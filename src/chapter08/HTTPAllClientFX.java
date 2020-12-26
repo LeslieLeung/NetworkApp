@@ -72,6 +72,7 @@ public class HTTPAllClientFX extends Application {
         btnConnect.setOnAction(event -> {
             String ip = tfIP.getText().trim();
             String port = tfPort.getText().trim();
+            // 通过port判定是http还是https客户端
             if (port.equals("443")) {
                 try {
                     client = new HTTPSClient(ip, port);
@@ -92,6 +93,7 @@ public class HTTPAllClientFX extends Application {
                         }
                         Platform.runLater(() -> {
                             taDisplay.appendText("对话已关闭！\n");
+                            isConnected = false;
                             // 连接断开后重新开放连接按钮
                             btnSend.setDisable(true);
                             btnConnect.setDisable(false);
@@ -124,6 +126,7 @@ public class HTTPAllClientFX extends Application {
                         }
                         Platform.runLater(() -> {
                             taDisplay.appendText("对话已关闭！\n");
+                            isConnected = false;
                             // 连接断开后重新开放连接按钮
                             btnSend.setDisable(true);
                             btnConnect.setDisable(false);
@@ -144,6 +147,7 @@ public class HTTPAllClientFX extends Application {
             client.send(sendMsg);//向服务器发送一串字符
             taDisplay.appendText("客户端发送：" + sendMsg + "\n");
             tfSend.clear();
+            // FIXME 需要bye后才能释放连接按钮
             // 发送bye后重新启用连接按钮，禁用发送按钮
             if (sendMsg.equals("bye")) {
                 btnConnect.setDisable(false);
@@ -188,6 +192,7 @@ public class HTTPAllClientFX extends Application {
         // 系统退出时，单独的读线程没有结束，因此会出现异常。
         // 解决方案：在这里通知线程中断，在线程循环中增加条件检测当前线程是否被中断。
 //        readThread.interrupt();
+        // FIXME 通过isConnected判断是否需要停止读线程
         if (isConnected) {
             readThread.stop();
         }
@@ -200,6 +205,7 @@ public class HTTPAllClientFX extends Application {
         client.send(sendMsg);//向服务器发送一串字符
         taDisplay.appendText("客户端发送：" + sendMsg + "\n");
         tfSend.clear();
+        // FIXME 需要bye才能断开连接释放连接按钮
         // 发送bye后重新启用连接按钮，禁用发送按钮
         if (sendMsg.equals("bye")) {
             btnConnect.setDisable(false);
@@ -207,16 +213,17 @@ public class HTTPAllClientFX extends Application {
         }
     }
 
+    /**
+     * 设置请求头
+     */
     public void sendHeader() {
         StringBuilder header = new StringBuilder();
         header.append("GET / HTTP/1.1" + "\n");
         header.append("HOST: ").append(tfIP.getText().trim() + "\n");
         header.append("Accept: */*" + "\n");
-//        header.append("Accept-Encoding: gzip, deflate, br\n");
         header.append("Accept-Language: zh-cn" + "\n");
         header.append("User-Agent: User-Agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36)" + "\n");
         header.append("Connection: Keepalive" + "\n");
-//        header.append("Cache-Control: max-age=0\n");
         String header_ = header.toString();
         System.out.println(header_);
         client.send(header_);

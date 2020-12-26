@@ -59,7 +59,7 @@ public class URLClientFX extends Application {
         btnSend.setOnAction(event -> {
             taDisplay.clear();
             String address = tfSend.getText().trim();
-            // URL匹配
+            // URL匹配（正则表达式）
             if (!address.matches("(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]")) {
                 taDisplay.appendText("URL地址输入不合规则！");
             } else {
@@ -90,6 +90,7 @@ public class URLClientFX extends Application {
             }
         });
         btnExit.setOnAction(event -> {
+            // FIXME interrupt()
             readThread.stop();
             System.exit(0);
         });

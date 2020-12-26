@@ -20,8 +20,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
-public class RmiClientFX extends Application
-{
+public class RmiClientFX extends Application {
     //定义成员变量
     private Button btnExit = new Button("退出");
     private Button btnSend = new Button("发送");
@@ -39,14 +38,12 @@ public class RmiClientFX extends Application
     private ClientService clientService;
     private String client;//学号-姓名的格式
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         launch(args);
     }
 
     @Override
-    public void start(Stage primaryStage)
-    {
+    public void start(Stage primaryStage) {
         //初始化界面元素
         initComponents(primaryStage);
 
@@ -61,15 +58,13 @@ public class RmiClientFX extends Application
     }
 
     //供外部调用的方法，用于在显示区添加信息，刷新窗体信息显示
-    public void appendMsg(String msg)
-    {
+    public void appendMsg(String msg) {
         taDisplay.appendText(msg + "\n");
     }
 
 
     //初始化界面元素
-    private void initComponents(Stage primaryStage)
-    {
+    private void initComponents(Stage primaryStage) {
         BorderPane mainPane = new BorderPane();
         //登录区域
         HBox hBoxLogin = new HBox();
@@ -83,14 +78,14 @@ public class RmiClientFX extends Application
         hBoxButton.setSpacing(10);
         hBoxButton.setPadding(new Insets(10, 20, 10, 20));
         hBoxButton.setAlignment(Pos.CENTER_RIGHT);
-        hBoxButton.getChildren().addAll(btnSend,btnExit);
+        hBoxButton.getChildren().addAll(btnSend, btnExit);
 
         //内容显示区域
         VBox vBox = new VBox();
         vBox.setSpacing(10);//各控件之间的间隔
         //VBox面板中的内容距离四周的留空区域
         vBox.setPadding(new Insets(10, 20, 10, 20));
-        vBox.getChildren().addAll(new Label("信息显示区"),taDisplay,new Label("信息输入区"),tfMsg);
+        vBox.getChildren().addAll(new Label("信息显示区"), taDisplay, new Label("信息输入区"), tfMsg);
 
 
         mainPane.setBottom(hBoxButton);
@@ -102,18 +97,15 @@ public class RmiClientFX extends Application
 
 
     //初始化rmi操作
-    private void initRmi()
-    {
-        try
-        {
+    private void initRmi() {
+        try {
 //            String ip = "202.116.195.71";
             String ip = "127.0.0.1";
             //为了不和上一讲端口冲突，临时修改为8008，一般不做特别说明，是使用1099
             int port = 8008;
             //获取RMI注册器
             Registry registry = LocateRegistry.getRegistry(ip, port);
-            for (String name : registry.list())
-            {
+            for (String name : registry.list()) {
                 System.out.println(name);
             }
 
@@ -122,35 +114,28 @@ public class RmiClientFX extends Application
             serverService = (ServerService) registry.lookup("ServerService");
             //实例化本地客户端的远程对象
             clientService = new ClientServiceImpl(this);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     //初始化事件
-    private void initEvent(Stage primaryStage)
-    {
+    private void initEvent(Stage primaryStage) {
 
         //登录，加入在线用户群，格式为学号-姓名
         btnLogin.setOnAction(event ->
         {
-            try
-            {
+            try {
                 String NO = tfNO.getText().trim();
                 String name = tfName.getText().trim();
-                if (!NO.equals("") && !NO.equals(""))
-                {
+                if (!NO.equals("") && !NO.equals("")) {
                     client = NO + "-" + name;
                     //以下为课堂计分操作，加入在线用户组成功，完成任务得5分
                     //调用服务端的远程方法，将客户加入在线用户组，并将客户端的远程对象注入，用于服务器跟踪客户
                     String retStr = serverService.addClientToOnlineGroup(client, clientService);
                     taDisplay.appendText(retStr + "\n");
                 }
-            }
-            catch (RemoteException e)
-            {
+            } catch (RemoteException e) {
                 e.printStackTrace();
             }
         });
@@ -159,13 +144,10 @@ public class RmiClientFX extends Application
         btnSend.setOnAction(event ->
         {
             String sendMsg = tfMsg.getText();
-            try
-            {
+            try {
                 //调用服务端的远程服务，群发消息
                 serverService.sendPublicMsgToServer(client, sendMsg);
-            }
-            catch (RemoteException e)
-            {
+            } catch (RemoteException e) {
                 e.printStackTrace();
             }
         });
@@ -188,18 +170,12 @@ public class RmiClientFX extends Application
     }
 
     //退出方法，一定要记住调用服务端远程方法清除登录记录
-    private void exit()
-    {
-        try
-        {
+    private void exit() {
+        try {
             serverService.removeClientFromOnlineGroup(client, clientService);
-        }
-        catch (RemoteException e)
-        {
+        } catch (RemoteException e) {
             e.printStackTrace();
-        }
-        finally
-        {
+        } finally {
             System.exit(0);
         }
     }

@@ -74,9 +74,6 @@ public class HTTPClientFX extends Application {
             try {
                 //tcpClient不是局部变量，是本程序定义的一个TCPClient类型的成员变量
                 httpClient = new HTTPClient(ip, port);
-                //成功连接服务器，接收服务器发来的第一条欢迎信息
-//                String firstMsg = tcpClient.receive();
-//                taDisplay.appendText(firstMsg + "\n");
                 // 启用发送按钮
                 btnSend.setDisable(false);
                 // 停用连接按钮
@@ -94,6 +91,7 @@ public class HTTPClientFX extends Application {
                     }
                     Platform.runLater(() -> {
                         taDisplay.appendText("对话已关闭！\n");
+                        isConnected = false;
                         // 连接断开后重新开放连接按钮
                         btnSend.setDisable(true);
                         btnConnect.setDisable(false);
@@ -157,6 +155,7 @@ public class HTTPClientFX extends Application {
         // 系统退出时，单独的读线程没有结束，因此会出现异常。
         // 解决方案：在这里通知线程中断，在线程循环中增加条件检测当前线程是否被中断。
 //        readThread.interrupt();
+        // FIXME 应使用interrupt()
         if (isConnected) {
             readThread.stop();
         }
@@ -176,16 +175,17 @@ public class HTTPClientFX extends Application {
         }
     }
 
+    /**
+     * 设置请求头
+     */
     public void sendHeader() {
         StringBuilder header = new StringBuilder();
         header.append("GET / HTTP/1.1" + "\n");
         header.append("HOST: ").append(tfIP.getText().trim() + "\n");
         header.append("Accept: */*" + "\n");
-//        header.append("Accept-Encoding: gzip, deflate, br\n");
         header.append("Accept-Language: zh-cn" + "\n");
         header.append("User-Agent: User-Agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36)" + "\n");
         header.append("Connection: Keepalive" + "\n");
-//        header.append("Cache-Control: max-age=0\n");
         String header_ = header.toString();
         System.out.println(header_);
         httpClient.send(header_);

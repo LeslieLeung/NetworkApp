@@ -46,6 +46,7 @@ public class HTTPClient extends Client {
         return msg;
     }
 
+    @Override
     public void close() {
         try {
             if (socket != null) {

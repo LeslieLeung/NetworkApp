@@ -11,7 +11,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import rmi.RmiMsgService;
+import chapter12.rmi.RmiMsgService;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -54,6 +54,7 @@ public class RmiStudentClientFX extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 
+        // TODO 启动时需要先启动服务器
         //初始化rmi相关操作
         new Thread(() -> {
             rmiInit();
@@ -92,8 +93,7 @@ public class RmiStudentClientFX extends Application {
 
             //(2)客户端(调用端)到注册器中使用助记符寻找并创建远程服务对象的客户端(调用端)stub，之后本地调用helloService的方法，实质就是调用了远程服务器上同名的远程接口下的同名方法
             rmiMsgService = (RmiMsgService) registry.lookup("RmiMsgService");
-//            rmiMsgService = (RmiMsgService) Naming.lookup("rmi://202.116.195.71:1099/" + "rmiMsgService");
-            //helloService = (HelloService)Naming.lookup("rmi://127.0.0.1:1099/" + "HelloService");
+//            rmiMsgService = (RmiMsgService) Naming.lookup("chapter12.rmi://202.116.195.71:1099/" + "rmiMsgService");
 
         } catch (Exception e) {
             e.printStackTrace();
