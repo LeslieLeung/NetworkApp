@@ -120,11 +120,11 @@ public class UDPClientFX extends Application {
     public void exit() {
         if (udpClient != null) {
             udpClient.send("bye");
-
+            // 系统退出时，单独的读线程没有结束，因此会出现异常。
+            // 解决方案：在这里通知线程中断，在线程循环中增加条件检测当前线程是否被中断。
+            readThread.interrupt();
         }
-        // 系统退出时，单独的读线程没有结束，因此会出现异常。
-        // 解决方案：在这里通知线程中断，在线程循环中增加条件检测当前线程是否被中断。
-        readThread.interrupt();
+
         System.exit(0);
     }
 
